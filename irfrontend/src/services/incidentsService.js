@@ -15,6 +15,10 @@ export const approveIncident = (request) => {
   return authInstance.post(`/api/approve/`, request);
 };
 
+export const deleteIncident = (id) => {
+  return authInstance.delete(`/api/delete/${id}/`);
+};
+
 export const filterIncidents = (request) => {
   return guestInstance.post(`/incidents/filter/`, request);
 };
@@ -76,6 +80,7 @@ const incidentsService = {
   filterIncidents,
   approveIncident,
   translateText,
+  deleteIncident,
 };
 
 export default incidentsService;

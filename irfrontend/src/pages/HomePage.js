@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import incidentsService from "../services/incidentsService";
-import { Button, Select, Form } from "antd";
+import { Button, Select, Form, Popconfirm, message } from "antd";
 import "leaflet-control-geocoder/dist/Control.Geocoder.css";
 import "leaflet-control-geocoder";
 import "leaflet/dist/leaflet.css";
@@ -12,6 +12,7 @@ import {
   Marker,
   Popup,
   useMapEvents,
+  Circle,
 } from "react-leaflet";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-defaulticon-compatibility";
@@ -52,12 +53,14 @@ const Search = () => {
 const HomePage = () => {
   const [approvedIncidents, setApprovedIncidents] = useState([]);
   const [locations, setLocations] = useState([]);
+  const [clusterLocations, setClusterLocations] = useState([]);
   const [types, setTypes] = useState([]);
   const [parentTypes, setParentTypes] = useState([]);
   const [subTypes, setSubTypes] = useState([]);
   const [selectedParentType, setSelectedParentType] = useState(null);
   const [incidentLocation, setIncidentLocation] = useState([0, 0]);
   const [showMarker, setShowMarker] = useState(false);
+  const [showAlarmingPlaces, setShowAlarmingPlaces] = useState(false);
   const [diagonalDistance, setDiagonalDistance] = useState(null);
   const [map, setMap] = useState(null);
   const [position, setPosition] = useState(() => [
@@ -93,6 +96,7 @@ const HomePage = () => {
   }, [days, approved, /*  locationIds,*/ type]);
   useEffect(() => {
     loadTypes();
+    loadClusterLocations();
   }, []);
 
   const handleMove = (event) => {
@@ -142,6 +146,25 @@ const HomePage = () => {
       console.log("APPROVE ERROR");
     }
   };
+  const clickDelete = async (incident) => {
+    console.log("Delete incident id:", incident.id);
+    console.log("Delete location_id:", incident.location_id);
+    try {
+      await mapService.deleteLocation(incident.location_id);
+      await incidentsService.deleteIncident(incident.id);
+      setApprovedIncidents((prevIncidents) =>
+        prevIncidents.filter(
+          (incidentFilter) => incidentFilter.id !== incident.id
+        )
+      );
+      setLocations((prevLocations) =>
+        prevLocations.filter((location) => location.id !== incident.location_id)
+      );
+      message.success("Incident has been deleted");
+    } catch (error) {
+      console.log("APPROVE ERROR");
+    }
+  };
   const clickTranslate = async (incidentId, incidentDescription) => {
     const translateRequest = {
       text: incidentDescription,
@@ -163,11 +186,13 @@ const HomePage = () => {
   const loadLocations = () => {
     mapService.getAllLocations().then((result) => setLocations(result.data));
   };
-
+  const loadClusterLocations = () => {
+    mapService
+      .getClusterLocations()
+      .then((result) => setClusterLocations(result.data));
+  };
   const loadTypes = () => {
     incidentsService.getAllTypes().then((result) => {
-      console.log(result.data);
-      console.log(result.data[13].name);
       const allTypes = result.data;
       setTypes(allTypes);
       const parentTypes = allTypes.filter((type) => !type.parent);
@@ -177,7 +202,10 @@ const HomePage = () => {
       setSubTypes(subTypes);
     });
   };
-
+  const onClickShowAlarmingPlaces = () => {
+    loadClusterLocations();
+    setShowAlarmingPlaces(!showAlarmingPlaces);
+  };
   const mergedIncidents = approvedIncidents.map((incident) => {
     const locationInfo = locations.find(
       (location) => location.id === incident.location_id
@@ -225,6 +253,13 @@ const HomePage = () => {
         <p>Latitude: {position.lat}</p>
         <p>Longitude: {position.lng}</p>
         <p>Diagonal: {diagonalDistance}</p>
+        <Button
+          onClick={onClickShowAlarmingPlaces}
+          type="primary"
+          style={{ margin: "10px" }}
+        >
+          {showAlarmingPlaces ? "Hide alarms" : "Show alarms"}
+        </Button>
         <Form form={form}>
           <span style={{ display: "flex", alignItems: "center" }}>
             <label style={{ marginRight: "5px" }}>Status:</label>
@@ -321,6 +356,14 @@ const HomePage = () => {
             attribution="© OpenStreetMap contributors"
           />
           <Search />
+          {showAlarmingPlaces &&
+            clusterLocations.map((location) => (
+              <Circle
+                center={[location.lat, location.lon]}
+                radius={6000}
+                color="red"
+              />
+            ))}
           {mergedIncidents.map((incident) => (
             <Marker
               key={incident.id}
@@ -329,7 +372,7 @@ const HomePage = () => {
             >
               <Popup style={{ whiteSpace: "normal", textAlign: "left" }}>
                 <div style={{ marginBottom: "8px" }}>
-                  <b>{types[incident.type - 1].name}</b>
+                  <b>{types[incident.type - 1]?.name}</b>
                 </div>
                 <div style={{ marginBottom: "8px", wordWrap: "break-word" }}>
                   {incident.description}
@@ -352,6 +395,21 @@ const HomePage = () => {
                   >
                     Translate
                   </Button>
+                  <Popconfirm
+                    title="Delete incident"
+                    description="Are you sure to delete this incident?"
+                    onConfirm={() => clickDelete(incident)}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <Button
+                      type="primary"
+                      danger
+                      style={{ marginLeft: "10px" }}
+                    >
+                      Delete
+                    </Button>
+                  </Popconfirm>
                 </div>
               </Popup>
             </Marker>
