@@ -24,7 +24,10 @@ export const filterIncidents = (request) => {
 };
 
 export const translateText = (request) => {
-  return translateInstance.post(`/translate/`, request);
+  return translateInstance.post(`/translate/en-sr/`, request);
+};
+export const nlpIncidents = () => {
+  return authInstance.get(`/incidents/nlp/`);
 };
 export const getApprovedIncidents = () => {
   return guestInstance.get(`/incidents/approved/`);
@@ -81,6 +84,7 @@ const incidentsService = {
   approveIncident,
   translateText,
   deleteIncident,
+  nlpIncidents,
 };
 
 export default incidentsService;

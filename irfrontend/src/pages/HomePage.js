@@ -75,7 +75,7 @@ const HomePage = () => {
   const [approved, setApproved] = useState(null);
   const [type, setType] = useState(null);
   const daysArray = [1, 7, 31];
-  const daysLabel = ["Danas", "Ove sedmice", "Ovaj mjesec"];
+  const daysLabel = ["Today", "This week", "This month"];
 
   useEffect(() => {
     loadLocations();

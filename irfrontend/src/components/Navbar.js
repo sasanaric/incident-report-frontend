@@ -12,9 +12,14 @@ const Navbar = () => {
       path: "/",
     },
     {
-      label: "Administration",
-      key: "administration",
-      path: "/administration",
+      label: "Grouped Incidents",
+      key: "grouped-incidents",
+      path: "/grouped-incidents",
+    },
+    {
+      label: "Analysis",
+      key: "analysis",
+      path: "/analysis",
     },
   ];
 
