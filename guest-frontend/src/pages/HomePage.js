@@ -59,7 +59,7 @@ const HomePage = () => {
   const [selectedParentType, setSelectedParentType] = useState(null);
   const [incidentLocation, setIncidentLocation] = useState([0, 0]);
   const [showMarker, setShowMarker] = useState(false);
-  const [diagonalDistance, setDiagonalDistance] = useState(null);
+  // const [diagonalDistance, setDiagonalDistance] = useState(null);
   const [map, setMap] = useState(null);
   const [position, setPosition] = useState(() => [
     44.77228923708804, 17.19100921271533,
@@ -101,7 +101,7 @@ const HomePage = () => {
     console.log(map.getCenter());
     console.log(map.getZoom());
     setPosition(map.getCenter());
-    calculateRadius();
+    // calculateRadius();
 
     console.log("\x1b[1m%s\x1b[0m", "END");
   };
@@ -116,14 +116,14 @@ const HomePage = () => {
     console.log(parentTypes);
     console.log(subTypes);
   };
-  const calculateRadius = () => {
-    const currentBounds = map.getBounds();
-    const northEast = currentBounds.getNorthEast();
-    const southWest = currentBounds.getSouthWest();
-    const diagonalDistance = northEast.distanceTo(southWest);
-    setDiagonalDistance(diagonalDistance);
-    console.log("DIAGONAL:", diagonalDistance);
-  };
+  // const calculateRadius = () => {
+  //   const currentBounds = map.getBounds();
+  //   const northEast = currentBounds.getNorthEast();
+  //   const southWest = currentBounds.getSouthWest();
+  //   const diagonalDistance = northEast.distanceTo(southWest);
+  //   setDiagonalDistance(diagonalDistance);
+  //   console.log("DIAGONAL:", diagonalDistance);
+  // };
 
   const loadLocations = () => {
     mapService.getAllLocations().then((result) => setLocations(result.data));
@@ -208,9 +208,9 @@ const HomePage = () => {
           alignItems: "center",
         }}
       >
-        <p>Latitude: {position.lat}</p>
+        {/* <p>Latitude: {position.lat}</p>
         <p>Longitude: {position.lng}</p>
-        <p>Diagonal: {diagonalDistance}</p>
+        <p>Diagonal: {diagonalDistance}</p> */}
         <Button
           type="primary"
           style={{
