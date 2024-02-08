@@ -29,6 +29,15 @@ export const translateText = (request) => {
 export const nlpIncidents = () => {
   return authInstance.get(`/incidents/nlp/`);
 };
+export const analysisTypeIncidents = () => {
+  return guestInstance.get(`/incidents/analysis/types/`);
+};
+export const analysisMonthsIncidents = () => {
+  return guestInstance.get(`/incidents/analysis/months/`);
+};
+export const analysisDaysIncidents = () => {
+  return guestInstance.get(`/incidents/analysis/days/`);
+};
 export const getApprovedIncidents = () => {
   return guestInstance.get(`/incidents/approved/`);
 };
@@ -46,30 +55,6 @@ export const getParentTypes = () => {
 export const getSubTypes = () => {
   return guestInstance.get("/types/sub/");
 };
-export const uploadImageToImgBB = async (imageFile) => {
-  const formData = new FormData();
-  formData.append("image", imageFile);
-
-  try {
-    const response = await fetch(
-      "https://api.imgbb.com/1/upload?key=ecd6f1b64ee036305d4defc872befbf6",
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Image upload failed");
-    }
-
-    const result = await response.json();
-    return result.data.url;
-  } catch (error) {
-    console.error("Error uploading image:", error);
-    throw error;
-  }
-};
 
 const incidentsService = {
   getAllIncidents,
@@ -79,12 +64,14 @@ const incidentsService = {
   getAllTypes,
   getSubTypes,
   getParentTypes,
-  uploadImageToImgBB,
   filterIncidents,
   approveIncident,
   translateText,
   deleteIncident,
   nlpIncidents,
+  analysisTypeIncidents,
+  analysisMonthsIncidents,
+  analysisDaysIncidents,
 };
 
 export default incidentsService;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Button } from "antd";
+import { Row, Col, Button, message } from "antd";
 import incidentsService from "../services/incidentsService";
 
 const IncidentCard = ({ incident, type, onDelete }) => {
@@ -18,12 +18,10 @@ const IncidentCard = ({ incident, type, onDelete }) => {
       const translatedText = result.data;
       setTranslatedDescription(translatedText);
     } catch (error) {
-      console.log("TRANSLATE ERROR");
+      message.error("Translate error");
     }
   };
   const clickApprove = async (incidentId) => {
-    console.log("Clicked Approve for Incident ID:", incidentId);
-
     const approveRequest = {
       id: incidentId,
     };
@@ -31,7 +29,7 @@ const IncidentCard = ({ incident, type, onDelete }) => {
       await incidentsService.approveIncident(approveRequest);
       setApproved(true);
     } catch (error) {
-      console.log("APPROVE ERROR");
+      message.error("Approve error");
     }
   };
   return (

@@ -31,9 +31,6 @@ const GroupedIncidents = () => {
   };
 
   const clickDelete = async (clusterLabel, incidentId, locationId) => {
-    console.log("Delete cluster:", clusterLabel);
-    console.log("Delete incident id:", incidentId);
-    console.log("Delete location_id:", locationId);
     try {
       await mapService.deleteLocation(locationId);
       await incidentsService.deleteIncident(incidentId);
@@ -51,7 +48,7 @@ const GroupedIncidents = () => {
       );
       message.success("Incident has been deleted");
     } catch (error) {
-      console.log("DELETE ERROR");
+      message.error("DELETE ERROR");
     }
   };
 
@@ -72,27 +69,9 @@ const GroupedIncidents = () => {
     ),
   }));
 
-  const onChange = (key) => {
-    console.log(key);
-  };
+  const onChange = () => {};
   return (
     <div>
-      {/* {groupIncidents.map((group) => (
-        <details key={group.cluster_label}>
-          <summary>{`Cluster ${group.cluster_label}`}</summary>
-          <div>
-            {group.incidents.map((incident) => (
-              <IncidentCard
-                key={incident.id}
-                incident={incident}
-                type={getTypeNameById(incident.type)}
-                cluster={group.cluster_label}
-                onDelete={clickDelete}
-              />
-            ))}
-          </div>
-        </details>
-      ))} */}
       <Collapse onChange={onChange} items={items} />
     </div>
   );

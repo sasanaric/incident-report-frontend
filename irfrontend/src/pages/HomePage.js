@@ -61,7 +61,7 @@ const HomePage = () => {
   const [incidentLocation, setIncidentLocation] = useState([0, 0]);
   const [showMarker, setShowMarker] = useState(false);
   const [showAlarmingPlaces, setShowAlarmingPlaces] = useState(false);
-  const [diagonalDistance, setDiagonalDistance] = useState(null);
+  // const [diagonalDistance, setDiagonalDistance] = useState(null);
   const [map, setMap] = useState(null);
   const [position, setPosition] = useState(() => [
     44.77228923708804, 17.19100921271533,
@@ -79,57 +79,51 @@ const HomePage = () => {
 
   useEffect(() => {
     loadLocations();
-    console.log(`DAYS:${days}`);
     const request = {
       days: days,
-      // location_ids: locationIds,
       approved: approved,
       type: type,
     };
-    console.log(request);
     const loadApprovedIncidents = () => {
       incidentsService
         .filterIncidents(request)
         .then((result) => setApprovedIncidents(result.data));
     };
     loadApprovedIncidents();
-  }, [days, approved, /*  locationIds,*/ type]);
+  }, [days, approved, type]);
   useEffect(() => {
     loadTypes();
     loadClusterLocations();
   }, []);
 
   const handleMove = (event) => {
-    console.log("\x1b[1m%s\x1b[0m", "MOVE");
-    console.log(map.getCenter());
-    console.log(map.getZoom());
+    // console.log("\x1b[1m%s\x1b[0m", "MOVE");
+    // console.log(map.getCenter());
+    // console.log(map.getZoom());
     setPosition(map.getCenter());
-    calculateRadius();
+    // calculateRadius();
 
-    console.log("\x1b[1m%s\x1b[0m", "END");
+    // console.log("\x1b[1m%s\x1b[0m", "END");
   };
 
   const handleClick = (event) => {
-    console.log("\x1b[1m%s\x1b[0m", "CLICK");
+    // console.log("\x1b[1m%s\x1b[0m", "CLICK");
     setShowMarker(true);
-    console.log(event);
+    // console.log(event);
     setIncidentLocation([event.latlng.lat, event.latlng.lng]);
-    console.log(event.latlng.lat);
-    console.log(event.latlng.lng);
-    console.log(parentTypes);
-    console.log(subTypes);
+    // console.log(event.latlng.lat);
+    // console.log(event.latlng.lng);
+    // console.log(parentTypes);
+    // console.log(subTypes);
   };
-  const calculateRadius = () => {
-    const currentBounds = map.getBounds();
-    const northEast = currentBounds.getNorthEast();
-    const southWest = currentBounds.getSouthWest();
-    const diagonalDistance = northEast.distanceTo(southWest);
-    setDiagonalDistance(diagonalDistance);
-    console.log("DIAGONAL:", diagonalDistance);
-  };
+  // const calculateRadius = () => {
+  //   const currentBounds = map.getBounds();
+  //   const northEast = currentBounds.getNorthEast();
+  //   const southWest = currentBounds.getSouthWest();
+  //   const diagonalDistance = northEast.distanceTo(southWest);
+  //   setDiagonalDistance(diagonalDistance);
+  // };
   const clickApprove = async (incidentId) => {
-    console.log("Clicked Approve for Incident ID:", incidentId);
-
     const approveRequest = {
       id: incidentId,
     };
@@ -143,12 +137,10 @@ const HomePage = () => {
         )
       );
     } catch (error) {
-      console.log("APPROVE ERROR");
+      message.error("Approve error");
     }
   };
   const clickDelete = async (incident) => {
-    console.log("Delete incident id:", incident.id);
-    console.log("Delete location_id:", incident.location_id);
     try {
       await mapService.deleteLocation(incident.location_id);
       await incidentsService.deleteIncident(incident.id);
@@ -162,7 +154,7 @@ const HomePage = () => {
       );
       message.success("Incident has been deleted");
     } catch (error) {
-      console.log("APPROVE ERROR");
+      message.error("Delete error");
     }
   };
   const clickTranslate = async (incidentId, incidentDescription) => {
@@ -171,7 +163,6 @@ const HomePage = () => {
     };
     try {
       const result = await incidentsService.translateText(translateRequest);
-      console.log("DATA:" + result.data);
       setApprovedIncidents((prevIncidents) =>
         prevIncidents.map((incident) =>
           incident.id === incidentId
@@ -180,7 +171,7 @@ const HomePage = () => {
         )
       );
     } catch (error) {
-      console.log("TRANSLATE ERROR");
+      message.error("Translate error");
     }
   };
   const loadLocations = () => {
@@ -250,9 +241,9 @@ const HomePage = () => {
           alignItems: "center",
         }}
       >
-        <p>Latitude: {position.lat}</p>
+        {/* <p>Latitude: {position.lat}</p>
         <p>Longitude: {position.lng}</p>
-        <p>Diagonal: {diagonalDistance}</p>
+        <p>Diagonal: {diagonalDistance}</p> */}
         <Button
           onClick={onClickShowAlarmingPlaces}
           type="primary"

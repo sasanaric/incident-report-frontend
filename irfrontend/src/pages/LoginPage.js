@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, message } from "antd";
 import AuthContext from "../context/AuthContext";
 
 const LoginPage = () => {
@@ -9,10 +9,9 @@ const LoginPage = () => {
     const { username, password } = values;
 
     try {
-      console.log("LoginPage - Form submitted");
       await loginUser(username, password);
     } catch (error) {
-      console.error("LoginPage - Error during login:", error);
+      message.error("Login error");
     }
   };
 

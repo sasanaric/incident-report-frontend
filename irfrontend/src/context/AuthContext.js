@@ -5,6 +5,7 @@ import {
   INCIDENT_TOKEN_REFRESH_URL,
   INCIDENT_TOKEN_URL,
 } from "../constants/URL";
+import { message } from "antd";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -22,9 +23,6 @@ export const AuthProvider = ({ children }) => {
   const history = useNavigate();
   const loginUser = async (username, password) => {
     try {
-      console.log("loginUserFunction()", username, password);
-      console.log("AuthContext - Form submitted");
-
       const response = await fetch(INCIDENT_TOKEN_URL, {
         method: "POST",
         headers: {
@@ -34,7 +32,6 @@ export const AuthProvider = ({ children }) => {
       });
 
       const data = await response.json();
-      console.log("AuthContext - Login response:", data);
       if (response.ok) {
         setAuthTokens(data);
         setUser(jwtDecode(data.access));
@@ -42,7 +39,7 @@ export const AuthProvider = ({ children }) => {
         history("/");
       }
     } catch (error) {
-      console.error("AuthContext - Error during login:", error);
+      message.error("Login error");
     }
   };
 
@@ -55,7 +52,6 @@ export const AuthProvider = ({ children }) => {
 
   const updateToken = useCallback(async () => {
     try {
-      console.log("updateToken()");
       const response = await fetch(INCIDENT_TOKEN_REFRESH_URL, {
         method: "POST",
         headers: {
@@ -65,14 +61,11 @@ export const AuthProvider = ({ children }) => {
       });
 
       const data = await response.json();
-      console.log("updateToken()", data);
       if (response.ok && data.access) {
         setAuthTokens(data);
         setUser(jwtDecode(data.access));
         localStorage.setItem("authTokens", JSON.stringify(data));
       } else {
-        // Log the error or handle it in an appropriate way
-        console.error("Error updating token:", data.error);
         logoutUser();
       }
 
@@ -80,8 +73,7 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
       }
     } catch (error) {
-      console.error("Network error:", error);
-      // Handle network errors
+      message.error("Network error");
       logoutUser();
     }
   }, [authTokens, loading, logoutUser]);

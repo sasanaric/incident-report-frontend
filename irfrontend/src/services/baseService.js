@@ -28,7 +28,6 @@ export const createInstance = (baseUrl, useAuth) => {
       },
       (error) => {
         Promise.reject(error);
-        console.log("ACCESS TOKEN ISTEKAO");
       }
     );
   }

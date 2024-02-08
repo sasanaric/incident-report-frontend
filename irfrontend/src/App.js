@@ -15,11 +15,6 @@ function App() {
         <AuthProvider>
           <Navbar />
           <Routes>
-            {/* <Route
-            exact
-            path="*"
-            element={<PrivateRoute exact path="/" element={<HomePage />} />}
-          /> */}
             <Route element={<PrivateRoutes />}>
               <Route element={<HomePage />} path="/" exact />
               <Route
