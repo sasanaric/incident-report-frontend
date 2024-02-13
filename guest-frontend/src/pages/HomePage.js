@@ -73,14 +73,13 @@ const HomePage = () => {
   // const [approved, setApproved] = useState(null);
   const [type, setType] = useState(null);
   const daysArray = [1, 7, 31];
-  const daysLabel = ["Danas", "Ove sedmice", "Ovaj mjesec"];
+  const daysLabel = ["Today", "This week", "This month"];
 
   useEffect(() => {
     loadLocations();
     console.log(`DAYS:${days}`);
     const request = {
       days: days,
-      // location_ids: locationIds,
       approved: true,
       type: type,
     };
@@ -91,7 +90,7 @@ const HomePage = () => {
         .then((result) => setApprovedIncidents(result.data));
     };
     loadApprovedIncidents();
-  }, [days, /*approved,  locationIds,*/ type]);
+  }, [days, type]);
   useEffect(() => {
     loadTypes();
   }, []);
@@ -116,14 +115,6 @@ const HomePage = () => {
     console.log(parentTypes);
     console.log(subTypes);
   };
-  // const calculateRadius = () => {
-  //   const currentBounds = map.getBounds();
-  //   const northEast = currentBounds.getNorthEast();
-  //   const southWest = currentBounds.getSouthWest();
-  //   const diagonalDistance = northEast.distanceTo(southWest);
-  //   setDiagonalDistance(diagonalDistance);
-  //   console.log("DIAGONAL:", diagonalDistance);
-  // };
 
   const loadLocations = () => {
     mapService.getAllLocations().then((result) => setLocations(result.data));
@@ -208,9 +199,6 @@ const HomePage = () => {
           alignItems: "center",
         }}
       >
-        {/* <p>Latitude: {position.lat}</p>
-        <p>Longitude: {position.lng}</p>
-        <p>Diagonal: {diagonalDistance}</p> */}
         <Button
           type="primary"
           style={{

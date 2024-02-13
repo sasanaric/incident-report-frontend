@@ -17,7 +17,7 @@ export const filterIncidents = (request) => {
 };
 
 export const translateText = (request) => {
-  return translateInstance.post(`/translate/`, request);
+  return translateInstance.post(`/translate/en-sr/`, request);
 };
 
 export const getApprovedIncidents = () => {
